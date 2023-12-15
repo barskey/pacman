@@ -21,7 +21,7 @@ public class Ghost : MonoBehaviour
     private GhostStateMachine stateMachine;
 
     private TileController currentTile;
-    private Vector2 nextExit;
+    private Queue<Vector2> nextExits;
 
     private Vector2 moveDir;
     private Vector2 movePos;
@@ -67,29 +67,38 @@ public class Ghost : MonoBehaviour
 
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerEnter2D(Collider2D collision)  // entered new tile
     {
         var newTile = collision.GetComponent<TileController>();
 
-        SetNextDirection(newTile);
+        ChooseNextExit(newTile);
 
         currentTile = newTile;
+
+        UpdateTarget();
     }
 
-    private void SetNextDirection(TileController _checkTile)
+    private void ChooseNextExit(TileController _checkTile)
     {
-        var nextTile = board.GetTileAt(_checkTile.coord + nextExit);
+        var nextTile = board.GetTileAt(_checkTile.coord + nextExits.Peek());
 
         float dist = 0;
-        Vector2 bestChoice = nextExit;
+        Vector2 bestChoice = nextExits.Peek();
+
         foreach (var exit in nextTile.Exits)
         {
-            if (!Equals(exit, nextExit * -1) && Vector2.Distance(nextTile.coord, currentTarget.position) > dist){
+            if (!Equals(exit, nextExits.Peek() * -1) && Vector2.Distance(nextTile.coord, currentTarget.position) > dist){
                 bestChoice = exit;
                 dist = Vector2.Distance(nextTile.coord, currentTarget.position);
             }
         }
-        nextExit = bestChoice;
+
+        nextExits.Enqueue(bestChoice);
+    }
+
+    private void UpdateTarget()
+    {
+
     }
 
     public void SetTarget(Transform _newTarget)

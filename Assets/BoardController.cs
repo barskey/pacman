@@ -20,16 +20,16 @@ public class BoardController : MonoBehaviour
         }
     }
 
-    public TileController GetNextTile(Vector2 pos, Vector2 dir)
+    public TileController GetTileAtExit(Vector2 coord, Vector2 exit)
     {
-        int row = (int)(pos.y + dir.y);
-        int col = (int)(pos.x + dir.x);
+        int row = (int)(coord.x + exit.y);
+        int col = (int)(coord.y + exit.x);
 
         return tiles[row, col];
     }
 
-    public TileController GetTileAt(Vector2 pos)
+    public TileController GetTileAt(Vector2 coord)
     {
-        return tiles[(int)pos.y, (int)pos.x];
+        return tiles[(int)coord.x, (int)coord.y];
     }
 }

@@ -4,15 +4,14 @@ using UnityEngine;
 
 public class Pacman : MonoBehaviour
 {
-    public float speedInPPS;
-
     private PacAnimator anim;
 
     public Vector2 facingDir { get; private set; }
 
-    public Transform currentTile { get; private set; }
+    public TileController currentTile { get; private set; }
     private Vector2 movePos;
     private Vector2 target;
+    [SerializeField] private float speed;
 
     private bool moving;
     private bool chomp;
@@ -24,26 +23,24 @@ public class Pacman : MonoBehaviour
 
     private void Start()
     {
+        speed = 0.8f * Constants.MaxSpeedInPPS;
         movePos = transform.position;
+        facingDir = Vector2.left;
     }
 
     private void FixedUpdate()
     {
         Vector2 dir = GetInput();
 
-        if (!Equals(dir, Vector2.zero))
+        if (!Equals(dir, Vector2.zero) && CanMoveInDirection(dir))
         {
             facingDir = dir;
             anim.ChangeDir(dir);
         }
 
-        if (CanMove())
-        {
-            var pixelsPerFrame = speedInPPS * Time.deltaTime;
-            movePos += facingDir * pixelsPerFrame;
-        }
+        UpdatePosition();
 
-        transform.position = new Vector2(Mathf.RoundToInt(movePos.x), Mathf.RoundToInt(movePos.y));
+        anim.UpdateAnimation();
 
     }
 
@@ -71,13 +68,31 @@ public class Pacman : MonoBehaviour
         return dir;
     }
 
-    private bool CanMove()
+    private void UpdatePosition()
     {
-        return true;
+        var pixelsPerFrame = speed * Time.deltaTime;
+        movePos += facingDir * pixelsPerFrame;
+
+        transform.position = new Vector2(Mathf.RoundToInt(movePos.x), Mathf.RoundToInt(movePos.y));
+    }
+
+    private bool CanMoveInDirection(Vector2 dir)
+    {
+        //Debug.Log($"{Equals(transform.position, currentTile.transform.position)}");
+        if (currentTile.Exits.Contains(dir))
+        {
+            return true;
+        }
+        else if (!Equals(transform.position, currentTile.transform.position))
+        {
+            return true;
+        }
+
+        return false;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        currentTile = collision.transform;
+        currentTile = collision.GetComponent<TileController>();
     }
 }

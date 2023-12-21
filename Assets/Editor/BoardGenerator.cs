@@ -39,11 +39,14 @@ public class MyTools
 
         for (int row = 0; row < rows; row++)
         {
+            GameObject rowGameobject = new GameObject($"Row_{row}");
+            rowGameobject.transform.parent = tiles.transform;
+
             for (int col = 0; col < cols; col++)
             {
                 string name = string.Format("Tile_{0}_{1}", row, col);
 
-                GameObject tile = PrefabUtility.InstantiatePrefab(tilePrefab, tiles.transform) as GameObject;
+                GameObject tile = PrefabUtility.InstantiatePrefab(tilePrefab, rowGameobject.transform) as GameObject;
                 tile.transform.position = new Vector2(col * tileSize, row * tileSize);
                 tile.name = name;
 
@@ -137,7 +140,7 @@ public class MyTools
             "                            ",
             "                            ",
             "                            ",
-            " 35555 555556  355555 55556 ",
+            " 355557555556  355555755556 ",
             " A    A     A  A     A    A ",
             " A    A     A  A     A    A ",
             " A    A     A  A     A    A ",

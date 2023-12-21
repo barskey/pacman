@@ -11,18 +11,20 @@ public enum GhostMode
 
 public class Ghost : MonoBehaviour
 {
-    public float speedInPPS;
-
     [SerializeField] public Pacman player;
     [SerializeField] public Transform scatterTarget;
     [SerializeField] private BoardController board;
+    [SerializeField] private TileController startTile;
+    [SerializeField] private Vector2 startPosition;
+    [SerializeField] private Vector2 startDir;
 
     private PacAnimator anim;
     private GhostStateMachine stateMachine;
 
     private TileController currentTile;
-    private Queue<Vector2> nextExits;
+    private Queue<Vector2> nextExits = new Queue<Vector2>();
 
+    [SerializeField] private float speed;
     private Vector2 moveDir;
     private Vector2 movePos;
 
@@ -44,9 +46,14 @@ public class Ghost : MonoBehaviour
 
     private void Start()
     {
-        movePos = transform.position;
+        speed = 0.75f * Constants.MaxSpeedInPPS;
+        transform.position = startPosition;
+        movePos = startPosition;
+        currentTile = startTile;
+        currentTarget = scatterTarget;
+        moveDir = startDir;
+        nextExits.Enqueue(moveDir);
 
-        moveDir = Vector2.left;
         currentMode = GhostMode.Scatter;
 
         stateMachine.Initialize(scatterState);
@@ -54,21 +61,34 @@ public class Ghost : MonoBehaviour
 
     private void FixedUpdate()
     {
-        //if (!Equals(dir, Vector2.zero))
-        //{
-        //    facingDir = dir;
-        //    anim.ChangeDir(dir);
-        //}
+        UpdateMoveDir();
 
-        var pixelsToMove = speedInPPS * Time.deltaTime;
+        UpdatePosition();
+
+        anim.UpdateAnimation();
+    }
+
+    private void UpdatePosition()
+    {
+        var pixelsToMove = speed * Time.deltaTime;
         movePos += moveDir * pixelsToMove;
 
         transform.position = new Vector2(Mathf.RoundToInt(movePos.x), Mathf.RoundToInt(movePos.y));
+    }
 
+    private void UpdateMoveDir()
+    {
+        if (Equals(transform.position, currentTile.transform.position))
+        {
+            moveDir = nextExits.Dequeue();
+            anim.ChangeDir(moveDir);
+            //Debug.Log($"Dequeued {moveDir} Queue len:{nextExits.Count}");
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)  // entered new tile
     {
+        Debug.Log($"Entered {collision.name}");
         var newTile = collision.GetComponent<TileController>();
 
         ChooseNextExit(newTile);
@@ -80,16 +100,30 @@ public class Ghost : MonoBehaviour
 
     private void ChooseNextExit(TileController _checkTile)
     {
-        var nextTile = board.GetTileAt(_checkTile.coord + nextExits.Peek());
+        var nextTile = board.GetTileAtExit(_checkTile.coord, nextExits.Peek());
 
-        float dist = 0;
-        Vector2 bestChoice = nextExits.Peek();
+        float dist = Mathf.Infinity;
+        Vector2 bestChoice = nextTile.Exits[0];
 
-        foreach (var exit in nextTile.Exits)
+        foreach (Vector2 exit in nextTile.Exits)
         {
-            if (!Equals(exit, nextExits.Peek() * -1) && Vector2.Distance(nextTile.coord, currentTarget.position) > dist){
+            if (Equals(exit, nextExits.Peek() * -1))
+            {
+                continue;
+            }
+
+            if (Equals(exit, Vector2.up) && !nextTile.ghostCanExitUp)
+            {
+                continue;
+            }
+
+            TileController exitTile = board.GetTileAtExit(nextTile.coord, exit);
+            Debug.Assert(exitTile != null);
+
+            var distanceToTarget = Vector2.Distance(exitTile.transform.position, currentTarget.position);
+            if (distanceToTarget < dist) {
                 bestChoice = exit;
-                dist = Vector2.Distance(nextTile.coord, currentTarget.position);
+                dist = distanceToTarget;
             }
         }
 

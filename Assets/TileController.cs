@@ -15,7 +15,8 @@ public class TileController : MonoBehaviour
     [SerializeField] private bool hasDot;
     [SerializeField] private bool isPowerPellet;
     [SerializeField] private bool canMoveInto;
-
+    public bool ghostCanExitUp = true;
+        
     [Header("Debug")]
     [SerializeField] private bool drawOutlines;
     [SerializeField] private bool drawMovePath;

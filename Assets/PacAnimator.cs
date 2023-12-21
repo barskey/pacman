@@ -4,17 +4,19 @@ using UnityEngine;
 
 public class PacAnimator : MonoBehaviour
 {
-    [SerializeField] private Sprite[] LeftChomp;
-    [SerializeField] private Sprite[] RightChomp;
-    [SerializeField] private Sprite[] UpChomp;
-    [SerializeField] private Sprite[] DownChomp;
-    [SerializeField] private Sprite[] Die;
+    [SerializeField] private Sprite[] LeftAnim;
+    [SerializeField] private Sprite[] RightAnim;
+    [SerializeField] private Sprite[] UpAnim;
+    [SerializeField] private Sprite[] DownAnim;
+    [SerializeField] private Sprite[] DieAnim;
 
     private SpriteRenderer sr;
 
     private Sprite[] currentAnim;
-    private int index;
-    private int framesPerSprite = 2;
+    [SerializeField] private int frameIndex;
+    [SerializeField] private int framesPerSprite = 2;
+
+    [SerializeField] private int frameCounter;
 
     private void Awake()
     {
@@ -23,41 +25,46 @@ public class PacAnimator : MonoBehaviour
 
     private void Start()
     {
-        currentAnim = LeftChomp;
-        index = 0;
+        currentAnim = LeftAnim;
+        frameIndex = 0;
+        frameCounter = 0;
     }
 
     public void ChangeDir(Vector2 dir)
     {
         if (Equals(dir, Vector2.left))
         {
-            currentAnim = LeftChomp;
-            index = 0;
+            currentAnim = LeftAnim;
         }
         else if (Equals(dir, Vector2.right))
         {
-            currentAnim = RightChomp;
-            index = 0;
+            currentAnim = RightAnim;
         }
         else if (Equals(dir, Vector2.up))
         {
-            currentAnim = UpChomp;
-            index = 0;
+            currentAnim = UpAnim;
         }
         else if (Equals(dir, Vector2.down))
         {
-            currentAnim = DownChomp;
-            index = 0;
+            currentAnim = DownAnim;
         }
     }
 
     public void UpdateAnimation()
     {
-        sr.sprite = currentAnim[index];
-
-        if (index == currentAnim.Length)
+        if (frameCounter >= framesPerSprite)
         {
-
+            frameIndex++;
+            frameCounter = 0;
         }
+
+        if (frameIndex == currentAnim.Length)
+        {
+            frameIndex = 0;
+        }
+
+        sr.sprite = currentAnim[frameIndex];
+
+        frameCounter++;
     }
 }

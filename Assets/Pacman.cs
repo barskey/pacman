@@ -6,15 +6,13 @@ public class Pacman : MonoBehaviour
 {
     private PacAnimator anim;
 
-    public Vector2 facingDir { get; private set; }
-
     public TileController currentTile { get; private set; }
     private Vector2 movePos;
-    private Vector2 target;
-    [SerializeField] private float speed;
 
-    private bool moving;
-    private bool chomp;
+    [SerializeField] private Vector2 joystick = Vector2.zero;
+    [SerializeField] private Vector2 facingDir;
+    [SerializeField] private Vector2 movingDir;
+    [SerializeField] private float speed;
 
     private void Awake()
     {
@@ -24,62 +22,88 @@ public class Pacman : MonoBehaviour
     private void Start()
     {
         speed = 0.8f * Constants.MaxSpeedInPPS;
-        movePos = transform.position;
         facingDir = Vector2.left;
+        movingDir = Vector2.left;
+        movePos = transform.position;
+    }
+
+    private void Update()
+    {
+        GetInput();
     }
 
     private void FixedUpdate()
     {
-        Vector2 dir = GetInput();
-
-        if (!Equals(dir, Vector2.zero) && CanMoveInDirection(dir))
+        if (!Equals(joystick, Vector2.zero) && CanTurn(joystick))
         {
-            facingDir = dir;
-            anim.ChangeDir(dir);
+            Turn();
         }
 
-        UpdatePosition();
+        if (currentTile != null && CanMove())
+        {
+            UpdatePosition();
 
-        anim.UpdateAnimation();
-
+            anim.UpdateAnimation();
+        }
     }
 
-    private Vector2 GetInput()
+    private void GetInput()
     {
-        var dir = Vector2.zero;
+        joystick = Vector2.zero;
 
         if (Input.GetKey(KeyCode.UpArrow))
         {
-            dir = Vector2.up;
+            joystick = Vector2.up;
         }
         else if (Input.GetKey(KeyCode.DownArrow))
         {
-            dir = Vector2.down;
+            joystick = Vector2.down;
         }
         else if (Input.GetKey(KeyCode.LeftArrow))
         {
-            dir = Vector2.left;
+            joystick = Vector2.left;
         }
         else if (Input.GetKey(KeyCode.RightArrow))
         {
-            dir = Vector2.right;
+            joystick = Vector2.right;
         }
+    }
 
-        return dir;
+    private void Turn()
+    {
+        facingDir = joystick;
+        anim.ChangeDir(joystick);
     }
 
     private void UpdatePosition()
     {
-        var pixelsPerFrame = speed * Time.deltaTime;
-        movePos += facingDir * pixelsPerFrame;
+        Vector2 moveDirThisFrame = Equals(facingDir, movingDir) ? facingDir : facingDir + movingDir;
+
+        var pixelsThisFrame = speed * Time.deltaTime;
+        movePos += moveDirThisFrame * pixelsThisFrame;
 
         transform.position = new Vector2(Mathf.RoundToInt(movePos.x), Mathf.RoundToInt(movePos.y));
+
+        if (facingDir == Vector2.up || facingDir == Vector2.down)
+        {
+            if (transform.position.x == currentTile.transform.position.x)
+                movingDir = facingDir;
+        }
+        else if (facingDir == Vector2.right || facingDir == Vector2.left)
+        {
+            if (transform.position.y == currentTile.transform.position.y)
+                movingDir = facingDir;
+        }
     }
 
-    private bool CanMoveInDirection(Vector2 dir)
+    private bool CanTurn(Vector2 dir)
     {
-        //Debug.Log($"{Equals(transform.position, currentTile.transform.position)}");
-        if (currentTile.Exits.Contains(dir))
+        return currentTile.Exits.Contains(dir);
+    }
+
+    private bool CanMove()
+    {
+        if (currentTile.Exits.Contains(facingDir))
         {
             return true;
         }
@@ -87,8 +111,10 @@ public class Pacman : MonoBehaviour
         {
             return true;
         }
-
-        return false;
+        else
+        {
+            return false;
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

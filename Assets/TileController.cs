@@ -55,18 +55,14 @@ public class TileController : MonoBehaviour
             Exits.Add(Vector2.right);
     }
 
-    public void GetExits()
+    public bool ContainsCoord(Vector2 coord)
     {
-        // up, left, down, right
-        List<Vector2> exits = new List<Vector2>();
-
-
+        return 
+            coord.x <= (transform.position.x + 4) &&
+            coord.x >= (transform.position.x - 3) &&
+            coord.y <= (transform.position.y + 4) &&
+            coord.y >= (transform.position.y - 3);
     }
-
-    //private bool IsExit()
-    //{
-    //    Physics2D.Linecast(new Vector2(transform.position.x + 1, transform.position.y);
-    //}
 
     private void OnDrawGizmos()
     {

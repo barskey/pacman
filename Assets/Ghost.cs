@@ -61,34 +61,37 @@ public class Ghost : MonoBehaviour
 
     private void FixedUpdate()
     {
-        UpdateMoveDir();
-
-        UpdatePosition();
+        if (UpdatePosition())
+            UpdateMoveDir();
 
         anim.UpdateAnimation();
+        //Debug.Log($"CurrentTile:{currentTile.coord} MoveDir:{moveDir} Exits:{nextExits.Count}");
     }
 
-    private void UpdatePosition()
+    private bool UpdatePosition()
     {
         var pixelsToMove = speed * Time.deltaTime;
         movePos += moveDir * pixelsToMove;
 
+        var lastPos = transform.position;
         transform.position = new Vector2(Mathf.RoundToInt(movePos.x), Mathf.RoundToInt(movePos.y));
+
+        return !Equals(transform.position, lastPos);
     }
 
     private void UpdateMoveDir()
     {
-        if (Equals(transform.position, currentTile.transform.position))
+        if (Equals(transform.position, currentTile.transform.position)) // if we are at center pixel of tile
         {
-            moveDir = nextExits.Dequeue();
-            anim.ChangeDir(moveDir);
-            //Debug.Log($"Dequeued {moveDir} Queue len:{nextExits.Count}");
+            //Debug.Log("Center Pixel");
+            moveDir = nextExits.Dequeue(); // get next turn
+            anim.ChangeDir(nextExits.Peek());
         }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)  // entered new tile
     {
-        Debug.Log($"Entered {collision.name}");
+        //Debug.Log($"Entered {collision.name}");
         var newTile = collision.GetComponent<TileController>();
 
         ChooseNextExit(newTile);

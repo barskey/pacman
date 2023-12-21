@@ -5879,7 +5879,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!212 &195753036
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -19109,7 +19109,7 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 112, y: 140, z: -10}
+  m_LocalPosition: {x: 108, y: 140, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -27316,7 +27316,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &748088357
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27329,6 +27329,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c7a5480cac044cf9ad003586646c835, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  joystick: {x: 0, y: 0}
+  facingDir: {x: 0, y: 0}
+  movingDir: {x: 0, y: 0}
   speed: 0
 --- !u!212 &748088358
 SpriteRenderer:
@@ -31075,6 +31078,10 @@ PrefabInstance:
     - target: {fileID: 3363157043820121110, guid: 98776f84a95ca49a39378d0cd8fa83bf, type: 3}
       propertyPath: m_Name
       value: Tile_21_9
+      objectReference: {fileID: 0}
+    - target: {fileID: 3363157043820121110, guid: 98776f84a95ca49a39378d0cd8fa83bf, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5270244059594040750, guid: 98776f84a95ca49a39378d0cd8fa83bf, type: 3}
       propertyPath: coord.x
@@ -71418,6 +71425,10 @@ PrefabInstance:
     - target: {fileID: 3363157043820121110, guid: 98776f84a95ca49a39378d0cd8fa83bf, type: 3}
       propertyPath: m_Name
       value: Tile_21_10
+      objectReference: {fileID: 0}
+    - target: {fileID: 3363157043820121110, guid: 98776f84a95ca49a39378d0cd8fa83bf, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5270244059594040750, guid: 98776f84a95ca49a39378d0cd8fa83bf, type: 3}
       propertyPath: coord.x

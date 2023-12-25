@@ -11,12 +11,15 @@ public enum GhostMode
 
 public class Ghost : MonoBehaviour
 {
-    [SerializeField] public Pacman player;
+    [SerializeField] public LevelManager levelManager;
     [SerializeField] public Transform scatterTarget;
+
     [SerializeField] private BoardController board;
+    [SerializeField] private Pacman player;
     [SerializeField] private TileController startTile;
-    [SerializeField] private Vector2 startPosition;
-    [SerializeField] private Vector2 startDir;
+
+    [SerializeField] private Vector2 startPosition = new Vector2(108, 168);
+    [SerializeField] private Vector2 startDir = Vector2.left;
 
     private PacAnimator anim;
     private GhostStateMachine stateMachine;
@@ -28,20 +31,25 @@ public class Ghost : MonoBehaviour
     private Vector2 moveDir;
     private Vector2 movePos;
 
-    private Transform currentTarget;
-    private GhostMode currentMode;
+    protected Transform currentTarget;
 
     #region States
     public State scatterState { get; private set; }
+    public State chaseState { get; private set; }
+    public State frightenedState { get; private set; }
     #endregion
 
     private void Awake()
     {
+        levelManager.WaveChanged += OnWaveChanged;
+
         anim = GetComponent<PacAnimator>();
 
         stateMachine = new GhostStateMachine();
 
         scatterState = new ScatterState(stateMachine, this, player);
+        chaseState = new ChaseState(stateMachine, this, player);
+        frightenedState = new FrightenedState(stateMachine, this, player);
     }
 
     private void Start()
@@ -53,8 +61,6 @@ public class Ghost : MonoBehaviour
         currentTarget = scatterTarget;
         moveDir = startDir;
         nextExits.Enqueue(moveDir);
-
-        currentMode = GhostMode.Scatter;
 
         stateMachine.Initialize(scatterState);
     }
@@ -110,15 +116,11 @@ public class Ghost : MonoBehaviour
 
         foreach (Vector2 exit in nextTile.Exits)
         {
-            if (Equals(exit, nextExits.Peek() * -1))
-            {
+            if (Equals(exit, nextExits.Peek() * -1)) // can't exit in the direction we entered
                 continue;
-            }
 
-            if (Equals(exit, Vector2.up) && !nextTile.ghostCanExitUp)
-            {
+            if (Equals(exit, Vector2.up) && !nextTile.ghostCanExitUp) // can't turn up from special zones
                 continue;
-            }
 
             TileController exitTile = board.GetTileAtExit(nextTile.coord, exit);
             Debug.Assert(exitTile != null);
@@ -133,14 +135,34 @@ public class Ghost : MonoBehaviour
         nextExits.Enqueue(bestChoice);
     }
 
+    private void OnWaveChanged(GhostMode _newWave)
+    {
+        switch (_newWave)
+        {
+            case GhostMode.Chase:
+                stateMachine.ChangeState(chaseState);
+                break;
+            case GhostMode.Scatter:
+                stateMachine.ChangeState(scatterState);
+                break;
+            case GhostMode.Frightened:
+                stateMachine.ChangeState(frightenedState);
+                break;
+        }
+    }
+
     private void UpdateTarget()
     {
-
     }
 
     public void SetTarget(Transform _newTarget)
     {
         currentTarget = _newTarget;
+    }
+
+    public void SetSpeed(float _speed)
+    {
+        speed = _speed;
     }
 
     private void OnDrawGizmos()

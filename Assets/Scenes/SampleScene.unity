@@ -5879,7 +5879,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!212 &195753036
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -5959,9 +5959,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2126d78e70f94951a294b66dbd62fd0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 748088357}
+  levelManager: {fileID: 1449162612}
   scatterTarget: {fileID: 690062338}
   board: {fileID: 845513816}
+  player: {fileID: 748088357}
   startTile: {fileID: 1884280794}
   startPosition: {x: 108, y: 168}
   startDir: {x: -1, y: 0}
@@ -27331,7 +27332,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   joystick: {x: 0, y: 0}
   facingDir: {x: 0, y: 0}
-  movingDir: {x: 0, y: 0}
   speed: 0
 --- !u!212 &748088358
 SpriteRenderer:
@@ -31081,7 +31081,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3363157043820121110, guid: 98776f84a95ca49a39378d0cd8fa83bf, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5270244059594040750, guid: 98776f84a95ca49a39378d0cd8fa83bf, type: 3}
       propertyPath: coord.x
@@ -45752,7 +45752,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5270244059594040750, guid: 98776f84a95ca49a39378d0cd8fa83bf, type: 3}
       propertyPath: Exits.Array.size
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5270244059594040750, guid: 98776f84a95ca49a39378d0cd8fa83bf, type: 3}
       propertyPath: Exits.Array.data[0].y
@@ -45760,6 +45760,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5270244059594040750, guid: 98776f84a95ca49a39378d0cd8fa83bf, type: 3}
       propertyPath: Exits.Array.data[1].x
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5270244059594040750, guid: 98776f84a95ca49a39378d0cd8fa83bf, type: 3}
+      propertyPath: Exits.Array.data[2].x
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -54062,6 +54066,51 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 98776f84a95ca49a39378d0cd8fa83bf, type: 3}
+--- !u!1 &1449162611
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1449162613}
+  - component: {fileID: 1449162612}
+  m_Layer: 0
+  m_Name: LevelManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1449162612
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1449162611}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 22313f0eada3247c9874c3f14b7cd10e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentLevel: 0
+--- !u!4 &1449162613
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1449162611}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1450575214 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 702248042554086901, guid: 98776f84a95ca49a39378d0cd8fa83bf, type: 3}
@@ -71428,7 +71477,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3363157043820121110, guid: 98776f84a95ca49a39378d0cd8fa83bf, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5270244059594040750, guid: 98776f84a95ca49a39378d0cd8fa83bf, type: 3}
       propertyPath: coord.x
@@ -79241,6 +79290,7 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 519420032}
+  - {fileID: 1449162613}
+  - {fileID: 1703807475}
   - {fileID: 748088359}
   - {fileID: 195753037}
-  - {fileID: 1703807475}

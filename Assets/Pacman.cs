@@ -11,7 +11,6 @@ public class Pacman : MonoBehaviour
 
     [SerializeField] private Vector2 joystick = Vector2.zero;
     [SerializeField] private Vector2 facingDir;
-    [SerializeField] private Vector2 movingDir;
     [SerializeField] private float speed;
 
     private void Awake()
@@ -23,7 +22,6 @@ public class Pacman : MonoBehaviour
     {
         speed = 0.8f * Constants.MaxSpeedInPPS;
         facingDir = Vector2.left;
-        movingDir = Vector2.left;
         movePos = transform.position;
     }
 
@@ -77,23 +75,38 @@ public class Pacman : MonoBehaviour
 
     private void UpdatePosition()
     {
-        Vector2 moveDirThisFrame = Equals(facingDir, movingDir) ? facingDir : facingDir + movingDir;
+        Vector2 moveDirThisFrame;
+        Vector2 cornerDir = Vector2.zero;
+
+        if (facingDir == Vector2.up || facingDir == Vector2.down)
+        {
+            if (transform.position.x > currentTile.transform.position.x)
+            {
+                cornerDir = Vector2.left;
+            }
+            else if (transform.position.x < currentTile.transform.position.x)
+            {
+                cornerDir = Vector2.right;
+            }
+        }
+        else if (facingDir == Vector2.left || facingDir == Vector2.right)
+        {
+            if (transform.position.y > currentTile.transform.position.y)
+            {
+                cornerDir = Vector2.down;
+            }
+            else if (transform.position.y < currentTile.transform.position.y)
+            {
+                cornerDir = Vector2.up;
+            }
+        }
+
+        moveDirThisFrame = cornerDir + facingDir;
 
         var pixelsThisFrame = speed * Time.deltaTime;
         movePos += moveDirThisFrame * pixelsThisFrame;
 
         transform.position = new Vector2(Mathf.RoundToInt(movePos.x), Mathf.RoundToInt(movePos.y));
-
-        if (facingDir == Vector2.up || facingDir == Vector2.down)
-        {
-            if (transform.position.x == currentTile.transform.position.x)
-                movingDir = facingDir;
-        }
-        else if (facingDir == Vector2.right || facingDir == Vector2.left)
-        {
-            if (transform.position.y == currentTile.transform.position.y)
-                movingDir = facingDir;
-        }
     }
 
     private bool CanTurn(Vector2 dir)

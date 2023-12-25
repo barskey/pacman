@@ -1,3 +1,4 @@
+using UnityEngine;
 
 public class GhostStateMachine
 {
@@ -13,6 +14,7 @@ public class GhostStateMachine
     {
         currentState.Exit();
         currentState = _newState;
+        Debug.Log($"Entering {currentState}");
         currentState.Enter();
     }
 }

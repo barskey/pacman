@@ -3,7 +3,7 @@ using UnityEngine;
 
 public static class Constants
 {
-    public const float MaxSpeedInPPS = 75f;
+    public const float MaxSpeedInPPS = 75.75757625f;
 }
 
 

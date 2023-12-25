@@ -8,6 +8,7 @@ public class ChaseState : State
     public override void Enter()
     {
         base.Enter();
+        ghost.SetTarget(player.transform);
     }
 
     public override void Exit()

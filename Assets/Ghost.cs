@@ -54,7 +54,6 @@ public class Ghost : MonoBehaviour
 
     private void Start()
     {
-        speed = 0.75f * Constants.MaxSpeedInPPS;
         transform.position = startPosition;
         movePos = startPosition;
         currentTile = startTile;
@@ -160,9 +159,9 @@ public class Ghost : MonoBehaviour
         currentTarget = _newTarget;
     }
 
-    public void SetSpeed(float _speed)
+    public void SetSpeed(float _speedPercent)
     {
-        speed = _speed;
+        speed = _speedPercent * Constants.MaxSpeedInPPS;
     }
 
     private void OnDrawGizmos()

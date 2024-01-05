@@ -5964,6 +5964,7 @@ MonoBehaviour:
   startTile: {fileID: 1884280794}
   startPosition: {x: 108, y: 168}
   startDir: {x: -1, y: 0}
+  reverseNextTile: 0
   speed: 0
 --- !u!114 &195753041
 MonoBehaviour:
@@ -70124,15 +70125,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5270244059594040750, guid: 98776f84a95ca49a39378d0cd8fa83bf, type: 3}
       propertyPath: Exits.Array.size
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5270244059594040750, guid: 98776f84a95ca49a39378d0cd8fa83bf, type: 3}
       propertyPath: Exits.Array.data[0].x
       value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 5270244059594040750, guid: 98776f84a95ca49a39378d0cd8fa83bf, type: 3}
+      propertyPath: Exits.Array.data[1].x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5270244059594040750, guid: 98776f84a95ca49a39378d0cd8fa83bf, type: 3}
       propertyPath: Exits.Array.data[1].y
-      value: -1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5270244059594040750, guid: 98776f84a95ca49a39378d0cd8fa83bf, type: 3}
       propertyPath: Exits.Array.data[2].x
@@ -76263,15 +76268,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5270244059594040750, guid: 98776f84a95ca49a39378d0cd8fa83bf, type: 3}
       propertyPath: Exits.Array.size
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5270244059594040750, guid: 98776f84a95ca49a39378d0cd8fa83bf, type: 3}
       propertyPath: Exits.Array.data[0].x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5270244059594040750, guid: 98776f84a95ca49a39378d0cd8fa83bf, type: 3}
+      propertyPath: Exits.Array.data[0].y
       value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 5270244059594040750, guid: 98776f84a95ca49a39378d0cd8fa83bf, type: 3}
+      propertyPath: Exits.Array.data[1].x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5270244059594040750, guid: 98776f84a95ca49a39378d0cd8fa83bf, type: 3}
       propertyPath: Exits.Array.data[1].y
-      value: -1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5270244059594040750, guid: 98776f84a95ca49a39378d0cd8fa83bf, type: 3}
       propertyPath: Exits.Array.data[2].x

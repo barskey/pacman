@@ -147,7 +147,7 @@ public class MyTools
             " 95555F55755D55D55755F5555E ",
             " A    A  A        A  A    A ",
             " A    A  A        A  A    A ",
-            " 95555E  955755755C  B5555C ",
+            " 95555E  9556  355C  B5555C ",
             "      A     A  A     A      ",
             "      A     A  A     A      ",
             "      A  355D55D556  A      ",

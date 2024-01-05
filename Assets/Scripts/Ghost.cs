@@ -25,6 +25,7 @@ public class Ghost : MonoBehaviour
     private GhostStateMachine stateMachine;
     private bool didWaveChange;
     private GhostMode nextWave;
+    public bool reverseNextTile;
 
     private TileController currentTile;
     private Queue<Vector2> nextExits = new Queue<Vector2>();
@@ -65,7 +66,6 @@ public class Ghost : MonoBehaviour
 
         stateMachine.Initialize(scatterState);
         nextWave = GhostMode.Scatter;
-        didWaveChange = true;
     }
 
     private void FixedUpdate()
@@ -73,10 +73,11 @@ public class Ghost : MonoBehaviour
         if (didWaveChange)
             HandleWaveChanged();
 
-        //Debug.Log(nextExits.Count);
+        // Check if entered new tile
         if (board.GetTileAtPos(transform.position) != currentTile)
             EnterTile(board.GetTileAtPos(transform.position));
 
+        // Update position, and update facing direction if movement happened
         if (UpdatePosition())
             UpdateMoveDir();
 
@@ -110,12 +111,30 @@ public class Ghost : MonoBehaviour
 
     private void EnterTile(TileController newTile) // entered new tile
     {
-        // Debug.Log($"Entered {newTile}");
         currentTile = newTile;
+        Debug.Log($"Entered {newTile}");
 
         stateMachine.currentState.OnEnterTile();
 
+        if (reverseNextTile)
+        {
+            ReverseDirection();
+            reverseNextTile = false;
+        }
+
         ChooseNextExit(newTile);
+
+        foreach (var exit in nextExits)
+        {
+            Debug.Log($"Exit:{exit}");
+        }
+    }
+
+    private void ReverseDirection()
+    {
+        nextExits.Enqueue(facingDir * -1);
+        _ = nextExits.Dequeue();
+        // Debug.Log($"Enqueued {facingDir * -1}");
     }
 
     private void ChooseNextExit(TileController _checkTile)

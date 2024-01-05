@@ -5,11 +5,9 @@ public class ChaseState : State
     {
     }
 
-    public override void Enter()
+    public override void Enter(State _prevState)
     {
-        base.Enter();
-
-        ghost.SetTarget(player.currentTile.transform);
+        base.Enter(_prevState);
     }
 
     public override void Exit()

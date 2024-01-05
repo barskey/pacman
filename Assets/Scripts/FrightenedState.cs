@@ -6,9 +6,9 @@ public class FrightenedState : State
         levelSpeed = new float[] { 0.5f, 0.55f, 0.6f, 0.6f };
     }
 
-    public override void Enter()
+    public override void Enter(State _prevState)
     {
-        base.Enter();
+        base.Enter(_prevState);
     }
 
     public override void Exit()

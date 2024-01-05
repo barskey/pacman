@@ -7,14 +7,19 @@ public class GhostStateMachine
     public void Initialize(State _initState)
     {
         currentState = _initState;
-        currentState.Enter();
+
+        currentState.Enter(null);
     }
 
     public void ChangeState(State _newState)
     {
+        State prevState = currentState;
+
         currentState.Exit();
+
         currentState = _newState;
+
         Debug.Log($"Entering {currentState}");
-        currentState.Enter();
+        currentState.Enter(prevState);
     }
 }

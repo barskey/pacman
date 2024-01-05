@@ -13,9 +13,14 @@ public class State
         player = _player;
     }
 
-    public virtual void Enter()
+    public virtual void Enter(State _prevState)
     {
         ghost.SetSpeed(levelSpeed[ghost.levelManager.currentLevel]);
+
+        if (_prevState == ghost.chaseState || _prevState == ghost.scatterState)
+        {
+            ghost.reverseNextTile = true;
+        }
     }
 
     public virtual void Update()

@@ -5,11 +5,9 @@ public class ScatterState : State
     {
     }
 
-    public override void Enter()
+    public override void Enter(State _prevState)
     {
-        base.Enter();
-
-        ghost.SetTarget(ghost.scatterTarget);
+        base.Enter(_prevState);
     }
 
     public override void Exit()
@@ -20,5 +18,12 @@ public class ScatterState : State
     public override void Update()
     {
         base.Update();
+    }
+
+    public override void OnEnterTile()
+    {
+        base.OnEnterTile();
+
+        ghost.SetTarget(ghost.scatterTarget);
     }
 }

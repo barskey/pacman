@@ -23,7 +23,8 @@ public class Ghost : MonoBehaviour
 
     private PacAnimator anim;
     private GhostStateMachine stateMachine;
-    private GhostMode currentMode;
+    private bool didWaveChange;
+    private GhostMode nextWave;
 
     private TileController currentTile;
     private Queue<Vector2> nextExits = new Queue<Vector2>();
@@ -63,15 +64,15 @@ public class Ghost : MonoBehaviour
         nextExits.Enqueue(facingDir);
 
         stateMachine.Initialize(scatterState);
-        currentMode = GhostMode.Scatter;
+        nextWave = GhostMode.Scatter;
+        didWaveChange = true;
     }
 
     private void FixedUpdate()
     {
-        if (currentMode != stateMachine.currentState)
-        {
+        if (didWaveChange)
             HandleWaveChanged();
-        }
+
         //Debug.Log(nextExits.Count);
         if (board.GetTileAtPos(transform.position) != currentTile)
             EnterTile(board.GetTileAtPos(transform.position));
@@ -99,9 +100,9 @@ public class Ghost : MonoBehaviour
         // if we are at center pixel of tile
         if (transform.position == currentTile.transform.position)
         {
-            //Debug.Log("Center Pixel");
+            // Debug.Log("Center Pixel");
             facingDir = nextExits.Dequeue(); // get next exit
-            Debug.Log($"Dequeued {facingDir}");
+            // Debug.Log($"Dequeued {facingDir}");
 
             anim.ChangeDir(nextExits.Peek());
         }
@@ -109,7 +110,7 @@ public class Ghost : MonoBehaviour
 
     private void EnterTile(TileController newTile) // entered new tile
     {
-        Debug.Log($"Entered {newTile}");
+        // Debug.Log($"Entered {newTile}");
         currentTile = newTile;
 
         stateMachine.currentState.OnEnterTile();
@@ -146,12 +147,13 @@ public class Ghost : MonoBehaviour
 
         Debug.Assert(bestChoice != Vector2.zero);
         nextExits.Enqueue(bestChoice);
-        Debug.Log($"Enqueued {bestChoice}");
+        // Debug.Log($"Enqueued {bestChoice}");
     }
 
     private void OnWaveChanged(GhostMode _newWave)
     {
         nextWave = _newWave;
+        didWaveChange = true;
     }
 
     private void HandleWaveChanged()
@@ -168,6 +170,8 @@ public class Ghost : MonoBehaviour
                 stateMachine.ChangeState(frightenedState);
                 break;
         }
+
+        didWaveChange = false;
     }
 
     public void SetTarget(Transform _newTarget)

@@ -38,9 +38,7 @@ public class Pacman : MonoBehaviour
             EnterTile(board.GetTileAtPos(transform.position));
 
         if (joystick != Vector2.zero && CanTurn(joystick))
-        {
             Turn();
-        }
 
         if (currentTile != null && CanMove())
         {

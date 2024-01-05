@@ -23,12 +23,13 @@ public class Ghost : MonoBehaviour
 
     private PacAnimator anim;
     private GhostStateMachine stateMachine;
+    private GhostMode currentMode;
 
     private TileController currentTile;
     private Queue<Vector2> nextExits = new Queue<Vector2>();
 
     [SerializeField] private float speed;
-    private Vector2 moveDir;
+    private Vector2 facingDir;
     private Vector2 movePos;
 
     protected Transform currentTarget;
@@ -56,16 +57,25 @@ public class Ghost : MonoBehaviour
     {
         transform.position = startPosition;
         movePos = startPosition;
-        currentTile = startTile;
+        //currentTile = startTile;
         currentTarget = scatterTarget;
-        moveDir = startDir;
-        nextExits.Enqueue(moveDir);
+        facingDir = startDir;
+        nextExits.Enqueue(facingDir);
 
         stateMachine.Initialize(scatterState);
+        currentMode = GhostMode.Scatter;
     }
 
     private void FixedUpdate()
     {
+        if (currentMode != stateMachine.currentState)
+        {
+            HandleWaveChanged();
+        }
+        //Debug.Log(nextExits.Count);
+        if (board.GetTileAtPos(transform.position) != currentTile)
+            EnterTile(board.GetTileAtPos(transform.position));
+
         if (UpdatePosition())
             UpdateMoveDir();
 
@@ -76,67 +86,77 @@ public class Ghost : MonoBehaviour
     private bool UpdatePosition()
     {
         var pixelsToMove = speed * Time.deltaTime;
-        movePos += moveDir * pixelsToMove;
+        movePos += facingDir * pixelsToMove;
 
         var lastPos = transform.position;
         transform.position = new Vector2(Mathf.RoundToInt(movePos.x), Mathf.RoundToInt(movePos.y));
 
-        return !Equals(transform.position, lastPos);
+        return transform.position != lastPos;
     }
 
     private void UpdateMoveDir()
     {
-        if (Equals(transform.position, currentTile.transform.position)) // if we are at center pixel of tile
+        // if we are at center pixel of tile
+        if (transform.position == currentTile.transform.position)
         {
             //Debug.Log("Center Pixel");
-            moveDir = nextExits.Dequeue(); // get next turn
+            facingDir = nextExits.Dequeue(); // get next exit
+            Debug.Log($"Dequeued {facingDir}");
+
             anim.ChangeDir(nextExits.Peek());
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)  // entered new tile
+    private void EnterTile(TileController newTile) // entered new tile
     {
-        //Debug.Log($"Entered {collision.name}");
-        var newTile = collision.GetComponent<TileController>();
-
-        ChooseNextExit(newTile);
-
+        Debug.Log($"Entered {newTile}");
         currentTile = newTile;
 
-        UpdateTarget();
+        stateMachine.currentState.OnEnterTile();
+
+        ChooseNextExit(newTile);
     }
 
     private void ChooseNextExit(TileController _checkTile)
     {
-        var nextTile = board.GetTileAtExit(_checkTile.coord, nextExits.Peek());
+        TileController nextTile = board.GetTileAtExit(_checkTile.coord, nextExits.Peek());
 
         float dist = Mathf.Infinity;
-        Vector2 bestChoice = nextTile.Exits[0];
+        Vector2 bestChoice = Vector2.zero;
 
         foreach (Vector2 exit in nextTile.Exits)
         {
-            if (Equals(exit, nextExits.Peek() * -1)) // can't exit in the direction we entered
+            // can't exit in the direction we entered
+            if (exit == nextExits.Peek() * -1)
                 continue;
 
-            if (Equals(exit, Vector2.up) && !nextTile.ghostCanExitUp) // can't turn up from special zones
+            // can't turn up from special zones
+            if (exit == Vector2.up && !nextTile.ghostCanExitUp)
                 continue;
 
             TileController exitTile = board.GetTileAtExit(nextTile.coord, exit);
-            Debug.Assert(exitTile != null);
 
             var distanceToTarget = Vector2.Distance(exitTile.transform.position, currentTarget.position);
-            if (distanceToTarget < dist) {
+            if (distanceToTarget < dist)
+            {
                 bestChoice = exit;
                 dist = distanceToTarget;
             }
         }
 
+        Debug.Assert(bestChoice != Vector2.zero);
         nextExits.Enqueue(bestChoice);
+        Debug.Log($"Enqueued {bestChoice}");
     }
 
     private void OnWaveChanged(GhostMode _newWave)
     {
-        switch (_newWave)
+        nextWave = _newWave;
+    }
+
+    private void HandleWaveChanged()
+    {
+        switch (nextWave)
         {
             case GhostMode.Chase:
                 stateMachine.ChangeState(chaseState);
@@ -148,10 +168,6 @@ public class Ghost : MonoBehaviour
                 stateMachine.ChangeState(frightenedState);
                 break;
         }
-    }
-
-    private void UpdateTarget()
-    {
     }
 
     public void SetTarget(Transform _newTarget)

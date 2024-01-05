@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Pacman : MonoBehaviour
 {
+    [SerializeField] private BoardController board;
+
     private PacAnimator anim;
 
     public TileController currentTile { get; private set; }
@@ -32,7 +34,10 @@ public class Pacman : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (!Equals(joystick, Vector2.zero) && CanTurn(joystick))
+        if (board.GetTileAtPos(transform.position) != currentTile)
+            EnterTile(board.GetTileAtPos(transform.position));
+
+        if (joystick != Vector2.zero && CanTurn(joystick))
         {
             Turn();
         }
@@ -130,8 +135,8 @@ public class Pacman : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void EnterTile(TileController newTile)
     {
-        currentTile = collision.GetComponent<TileController>();
+        currentTile = newTile;
     }
 }

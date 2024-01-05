@@ -1,4 +1,4 @@
-﻿using System;
+﻿
 public class ChaseState : State
 {
     public ChaseState(GhostStateMachine _stateMachine, Ghost _ghost, Pacman _player) : base(_stateMachine, _ghost, _player)
@@ -8,7 +8,8 @@ public class ChaseState : State
     public override void Enter()
     {
         base.Enter();
-        ghost.SetTarget(player.transform);
+
+        ghost.SetTarget(player.currentTile.transform);
     }
 
     public override void Exit()
@@ -19,5 +20,12 @@ public class ChaseState : State
     public override void Update()
     {
         base.Update();
+    }
+
+    public override void OnEnterTile()
+    {
+        base.OnEnterTile();
+
+        ghost.SetTarget(player.currentTile.transform);
     }
 }

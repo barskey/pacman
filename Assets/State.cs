@@ -25,4 +25,9 @@ public class State
     public virtual void Exit()
     {
     }
+
+    public virtual void OnEnterTile()
+    {
+
+    }
 }

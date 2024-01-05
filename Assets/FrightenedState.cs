@@ -1,4 +1,4 @@
-﻿using System;
+﻿
 public class FrightenedState : State
 {
     public FrightenedState(GhostStateMachine _stateMachine, Ghost _ghost, Pacman _player) : base(_stateMachine, _ghost, _player)

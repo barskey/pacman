@@ -34,13 +34,13 @@ public class LevelManager : MonoBehaviour
     // {level 1}, {level 2-4}, {level 5+}
     private float[,] waveTimes =
     {
-        { 7, 7, 5 },        // scatter
-        { 20, 20, 20 },     // chase
-        { 7, 7, 5 },        // scatter
-        { 20, 20, 20 },     // chase
-        { 5, 5, 5 },        // scatter
-        { 20, 1033, 1037 }, // chase
-        { 5, 1/60, 1/60 },  // scatter
+        { 7, 7, 5 },            // scatter
+        { 20, 20, 20 },         // chase
+        { 7, 7, 5 },            // scatter
+        { 20, 20, 20 },         // chase
+        { 5, 5, 5 },            // scatter
+        { 20, 1033, 1037 },     // chase
+        { 5, 1f/60f, 1f/60f },  // scatter
         { Mathf.Infinity, Mathf.Infinity, Mathf.Infinity } // chase
     };
 
